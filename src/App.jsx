@@ -16,12 +16,19 @@ const firebaseConfig = {
   measurementId: "G-HTYEDTZFEP"
 };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-  }
+let app;
+let auth;
+let db;
+
+try {
+  app = initializeApp(firebaseConfig);
+  auth = getAuth(app);
+  db = getFirestore(app);
 } catch (e) {
-  console.warn("Firebase not fully configured. Using local state fallback.", e);
+  console.warn(
+    "Firebase not fully configured. Using local state fallback.",
+    e
+  );
 }
 
 const CheckCircle = ({ checked }) => (
