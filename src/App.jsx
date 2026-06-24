@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { initializeApp } from 'firebase/app';
-import { getAuth, signInAnonymously, onAuthStateChanged } from 'firebase/auth';
 import { getFirestore, doc, setDoc, onSnapshot } from 'firebase/firestore';
 
 // ----------------------------------------------------------------------
@@ -17,12 +16,10 @@ const firebaseConfig = {
 };
 
 let app;
-let auth;
 let db;
 
 try {
   app = initializeApp(firebaseConfig);
-  auth = getAuth(app);
   db = getFirestore(app);
 } catch (e) {
   console.warn(
@@ -117,7 +114,6 @@ const defaultPhases = [
 ];
 
 export default function App() {
-  const [user, setUser] = useState(null);
   const [phases, setPhases] = useState(defaultPhases);
   const [activePhaseId, setActivePhaseId] = useState('phase1');
   
@@ -132,48 +128,39 @@ export default function App() {
   const [newTaskText, setNewTaskText] = useState('');
   const [newTaskTag, setNewTaskTag] = useState('');
 
-  useEffect(() => {
-    if (!auth) return;
-    const initAuth = async () => {
-      try {
-        await signInAnonymously(auth);
-      } catch (e) {
-        console.error("Auth failed:", e);
-      }
-    };
-    initAuth();
-    
-    const unsubscribe = onAuthStateChanged(auth, setUser);
-    return () => unsubscribe();
-  }, []);
 
-  useEffect(() => {
-    if (!user || !db) return;
-    
-    // Save to a secure collection for this user
-    const docRef = doc(db, 'users', user.uid);
-    
-    const unsubscribe = onSnapshot(docRef, (docSnap) => {
-      if (docSnap.exists()) {
-        setPhases(docSnap.data().phases);
-      } else {
-        setDoc(docRef, { phases: defaultPhases });
-      }
-    });
+const updateData = async (updatedPhases) => {
+  setPhases(updatedPhases);
 
-    return () => unsubscribe();
-  }, [user]);
+  if (!db) return;
 
-  const updateData = async (updatedPhases) => {
-    setPhases(updatedPhases); // Update UI immediately
-    if (user && db) {
-      try {
-        await setDoc(doc(db, 'users', user.uid), { phases: updatedPhases }, { merge: true });
-      } catch (error) {
-        console.error("Error saving data:", error);
-      }
-    }
-  };
+  try {
+    await setDoc(
+      doc(db, "paperRevision", "main"),
+      { phases: updatedPhases },
+      { merge: true }
+    );
+  } catch (error) {
+    console.error("Error saving data:", error);
+  }
+};
+
+  return () => unsubscribe();
+}; [];
+
+  if (db) {
+  try {
+    await setDoc(
+      doc(db, "paperRevision", "main"),
+      { phases: updatedPhases },
+      { merge: true }
+    );
+  } catch (error) {
+    console.error("Error saving data:", error);
+  }
+}
+  
+  ;
 
   const toggleTask = (phaseId, taskId) => {
     const updatedPhases = phases.map(phase => {
@@ -462,4 +449,3 @@ export default function App() {
       </div>
     </div>
   );
-}
