@@ -4,7 +4,7 @@ import { getAuth, signInAnonymously, onAuthStateChanged } from 'firebase/auth';
 import { getFirestore, doc, setDoc, onSnapshot } from 'firebase/firestore';
 
 // ----------------------------------------------------------------------
-// FIREBASE CONFIGURATION - PASTE YOUR KEYS HERE!
+// FIREBASE CONFIGURATION
 // ----------------------------------------------------------------------
 const firebaseConfig = {
  apiKey: "AIzaSyD58Byog0HXEJKzFOAScX1jl0WmotVPLo8",
@@ -16,12 +16,9 @@ const firebaseConfig = {
   measurementId: "G-HTYEDTZFEP"
 };
 
-let app, auth, db;
-try {
-  if (firebaseConfig.apiKey !== "AIzaSyD58Byog0HXEJKzFOAScX1jl0WmotVPLo8") {
-    app = initializeApp(firebaseConfig);
-    auth = getAuth(app);
-    db = getFirestore(app);
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
   }
 } catch (e) {
   console.warn("Firebase not fully configured. Using local state fallback.", e);
