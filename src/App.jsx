@@ -7,10 +7,10 @@ import { getFirestore, doc, setDoc, onSnapshot } from 'firebase/firestore';
 // FIREBASE CONFIGURATION - PASTE YOUR KEYS HERE!
 // ----------------------------------------------------------------------
 const firebaseConfig = {
-  apiKey: "AIzaSyD58ByogHXEJKzFOAScX1jL0WmotVPLo8",
+ apiKey: "AIzaSyD58Byog0HXEJKzFOAScX1jl0WmotVPLo8",
   authDomain: "paper-revision-plan.firebaseapp.com",
   projectId: "paper-revision-plan",
-  storageBucket: "paper-revision-plan.appspot.com",
+  storageBucket: "paper-revision-plan.firebasestorage.app",
   messagingSenderId: "110145505262",
   appId: "1:110145505262:web:6c715f0774806e904d70ff",
   measurementId: "G-HTYEDTZFEP"
@@ -18,7 +18,7 @@ const firebaseConfig = {
 
 let app, auth, db;
 try {
-  if (firebaseConfig.apiKey !== "YOUR_API_KEY") {
+  if (firebaseConfig.apiKey !== "AIzaSyD58Byog0HXEJKzFOAScX1jl0WmotVPLo8") {
     app = initializeApp(firebaseConfig);
     auth = getAuth(app);
     db = getFirestore(app);
