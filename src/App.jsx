@@ -7,12 +7,13 @@ import { getFirestore, doc, setDoc, onSnapshot } from 'firebase/firestore';
 // FIREBASE CONFIGURATION - PASTE YOUR KEYS HERE!
 // ----------------------------------------------------------------------
 const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT_ID.appspot.com",
-    messagingSenderId: "YOUR_SENDER_ID",
-    appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyD58ByogHXEJKzFOAScX1jL0WmotVPLo8",
+  authDomain: "paper-revision-plan.firebaseapp.com",
+  projectId: "paper-revision-plan",
+  storageBucket: "paper-revision-plan.appspot.com",
+  messagingSenderId: "110145505262",
+  appId: "1:110145505262:web:6c715f0774806e904d70ff",
+  measurementId: "G-HTYEDTZFEP"
 };
 
 let app, auth, db;
