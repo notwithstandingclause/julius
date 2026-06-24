@@ -6,7 +6,7 @@ import { getFirestore, doc, setDoc, onSnapshot } from 'firebase/firestore';
 // FIREBASE CONFIGURATION
 // ----------------------------------------------------------------------
 const firebaseConfig = {
- apiKey: "AIzaSyD58Byog0HXEJKzFOAScX1jl0WmotVPLo8",
+  apiKey: "AIzaSyD58Byog0HXEJKzFOAScX1jl0WmotVPLo8",
   authDomain: "paper-revision-plan.firebaseapp.com",
   projectId: "paper-revision-plan",
   storageBucket: "paper-revision-plan.firebasestorage.app",
@@ -15,18 +15,9 @@ const firebaseConfig = {
   measurementId: "G-HTYEDTZFEP"
 };
 
-let app;
-let db;
-
-try {
-  app = initializeApp(firebaseConfig);
-  db = getFirestore(app);
-} catch (e) {
-  console.warn(
-    "Firebase not fully configured. Using local state fallback.",
-    e
-  );
-}
+// Clean initialization
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
 const CheckCircle = ({ checked }) => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill={checked ? "#007AFF" : "none"} stroke={checked ? "#007AFF" : "#C7C7CC"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-colors duration-300">
@@ -117,50 +108,38 @@ export default function App() {
   const [phases, setPhases] = useState(defaultPhases);
   const [activePhaseId, setActivePhaseId] = useState('phase1');
   
-  // UI State for adding new Phase
+  // UI State
   const [showAddPhase, setShowAddPhase] = useState(false);
   const [newPhaseTitle, setNewPhaseTitle] = useState('');
   const [newPhaseDate, setNewPhaseDate] = useState('');
   const [newPhaseDesc, setNewPhaseDesc] = useState('');
-
-  // UI State for adding new Task
   const [addingTaskToPhase, setAddingTaskToPhase] = useState(null);
   const [newTaskText, setNewTaskText] = useState('');
   const [newTaskTag, setNewTaskTag] = useState('');
 
+  // Listen to the single global document
+  useEffect(() => {
+    const docRef = doc(db, "paperRevision", "main");
+    const unsubscribe = onSnapshot(docRef, (docSnap) => {
+      if (docSnap.exists()) {
+        setPhases(docSnap.data().phases);
+      } else {
+        // Create the global document if it doesn't exist yet
+        setDoc(docRef, { phases: defaultPhases });
+      }
+    });
 
-const updateData = async (updatedPhases) => {
-  setPhases(updatedPhases);
+    return () => unsubscribe();
+  }, []);
 
-  if (!db) return;
-
-  try {
-    await setDoc(
-      doc(db, "paperRevision", "main"),
-      { phases: updatedPhases },
-      { merge: true }
-    );
-  } catch (error) {
-    console.error("Error saving data:", error);
-  }
-};
-
-  return () => unsubscribe();
-}; [];
-
-  if (db) {
-  try {
-    await setDoc(
-      doc(db, "paperRevision", "main"),
-      { phases: updatedPhases },
-      { merge: true }
-    );
-  } catch (error) {
-    console.error("Error saving data:", error);
-  }
-}
-  
-  ;
+  const updateData = async (updatedPhases) => {
+    setPhases(updatedPhases); // Update local state immediately for a snappy UI
+    try {
+      await setDoc(doc(db, "paperRevision", "main"), { phases: updatedPhases }, { merge: true });
+    } catch (error) {
+      console.error("Error saving data:", error);
+    }
+  };
 
   const toggleTask = (phaseId, taskId) => {
     const updatedPhases = phases.map(phase => {
@@ -449,3 +428,4 @@ const updateData = async (updatedPhases) => {
       </div>
     </div>
   );
+}
